@@ -15,21 +15,31 @@ class MatriculaController
     }
 
     // Cadastrar matrícula
-    public function cadastrar()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['acao']) && $_POST['acao'] == 'cadastrar') {
-            $aluno = $_POST['aluno'];
-            $turma = $_POST['turma'];
-            $data = $_POST['data'];
-            $status = $_POST['status'];
-
-            $this->matricula->cadastrar($aluno, $turma, $data, $status);
-
-            header('Location: index.php');
+    
+public function cadastrar()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['acao']) && $_POST['acao'] == 'cadastrar') {
+        $nome = trim($_POST['aluno_nome']);
+        $turma = $_POST['turma'];
+        $data = $_POST['data'];
+        $status = $_POST['status'];
+        $alunos = $this->matricula->buscarAlunoPorNome($nome);
+        if (count($alunos) == 0) {
+            header('Location: index.php?erro=aluno');
             exit;
         }
+        if (count($alunos) > 1) {
+            header('Location: index.php?erro=duplicado');
+            exit;
+        }
+        $aluno = $alunos[0]['id_aluno'];
 
+        $this->matricula->cadastrar($aluno, $turma, $data, $status);
+        header('Location: index.php?sucesso=1');
+        exit;
     }
+}
+
 
     // Excluir matrícula
     public function excluir()
@@ -61,19 +71,13 @@ class MatriculaController
         return $this->matricula->consultarTurmas();
     }
 
-    // Buscar alunos
-    public function buscarAlunos()
-    {
-        $sql = "SELECT id_aluno, nome FROM Aluno ORDER BY nome";
-        return $this->pdo->query($sql)->fetchAll();
-    }
-
-    // Buscar turmas
+    
+    // Buscar turmas com seus cursos
     public function buscarTurmas()
     {
-        $sql = "SELECT id_turma, nome_turma FROM Turma ORDER BY nome_turma";
-        return $this->pdo->query($sql)->fetchAll();
+        return $this->matricula->listarTurmasComCurso();
     }
+
 }
 
 ?>
