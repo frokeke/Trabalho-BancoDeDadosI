@@ -1,37 +1,20 @@
+
 <?php
 
-$host = '200.129.139.155';
-$usuario = 'aluno';
-$senha = 'Aluno@2026';
-$banco = 'meubanco';
+$host = "nome_host";
+$port = "3306";
+$dbname = "grupo06_escola_mer";
+$user = "root";
+$password = "";
 
-$link = mysqli_connect($host, $usuario, $senha, $banco);
+try {
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $user, $password);
 
-if (mysqli_connect_error()) {
-    printf('Erro de conexão: %s', mysqli_connect_error());
-    exit;
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+
+    die("Erro na conexão com o banco: " . $e->getMessage());
+
 }
-
-if (!mysqli_set_charset($link, 'utf8')) {
-    printf('Error ao usar utf8: %s', mysqli_error($link));
-    exit;
-}
-
-if ($result = mysqli_query($link, 'SELECT * FROM nome')) {
-
-    /* Pega os dados */
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo $row['nome'];
-    }
-
-    /* libera os resultados */
-    mysqli_free_result($result);
-} else {
-    /*Trata o erro da query, se ocorrer*/
-    printf('Erro na query: %s', mysqli_error($link));
-    exit;
-}
-
-/* fecha a conexão */
-mysqli_close($link);
-?>
