@@ -13,7 +13,6 @@ $controller->excluir();
 // Buscar dados para a página
 $matriculas = $controller->listar();
 
-$alunos = $controller->buscarAlunos();
 $turmas = $controller->buscarTurmas();
 
 $consultaAlunosTurmas = $controller->consultarAlunosTurmas();
