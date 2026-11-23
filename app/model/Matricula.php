@@ -59,6 +59,33 @@ class Matricula
 
         return $this->pdo->query($sql)->fetchAll();
     }
-}
 
+
+    // Buscar aluno pelo nome
+    public function buscarAlunoPorNome($nome)
+    {
+        $sql = "SELECT id_aluno, nome
+                FROM Aluno
+                WHERE nome = ?";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$nome]);
+
+        return $stmt->fetchAll();
+    }
+
+    // Listar turmas com seus respectivos cursos
+    public function listarTurmasComCurso()
+    {
+        $sql = "SELECT
+                    t.id_turma,
+                    t.nome_turma,
+                    c.nome AS curso
+                FROM Turma t
+                INNER JOIN Curso c ON t.id_curso = c.id_curso
+                ORDER BY c.nome, t.nome_turma";
+
+        return $this->pdo->query($sql)->fetchAll();
+    }
+}
 ?>
